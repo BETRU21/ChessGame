@@ -94,7 +94,12 @@ class ViewBoard(QWidget, Ui_MainWindow):
 
     def buttonAction(self):
         sender = self.sender().text()
-        if sender in self.movements:
+        if self.dataBoard.lookSpecificPosition(sender) == ("empty", "empty"):
+            pb = self.buttons.get(sender)
+            pb.setStatus(False)
+            return False
+
+        elif sender in self.movements:
             oldPos = self.selectedPiece.get("oldPos")
             color = self.selectedPiece.get("color")
             piece = self.selectedPiece.get("piece")

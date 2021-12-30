@@ -7,31 +7,72 @@ class DataBoard:
 		self.capturedPieces = {"white": [], "black": []}
 		self.initializeGameState()
 
+	def lookGameState(self):
+		return self.gameState
+
+	def lookSpecificPosition(self, pos):
+		return self.gameState.get(pos)
+
 	def checkValidMovements(self, pos, color, piece):
 		if piece == "king":
 			validMovements = self.kingMovements(pos, color)
-			return validMovements
 		elif piece == "queen":
 			validMovements = self.queenMovements(pos, color)
-			return validMovements
 		elif piece == "rook":
 			validMovements = self.rookMovements(pos, color)
-			return validMovements
 		elif piece == "knight":
 			validMovements = self.knightMovements(pos, color)
-			return validMovements
 		elif piece == "bishop":
 			validMovements = self.bishopMovements(pos, color)
-			return validMovements
 		elif piece == "pawn":
 			validMovements = self.pawnMovements(pos, color)
-			return validMovements
+		elif piece == "empty":
+			validMovements = []
 		else:
-			print("what")
+			validMovements = []
+			print("Invalid Piece")
+		return validMovements
 
+	def addItemInGameState(self, pos, item):
+		self.gameState[pos] = item
+	
+	def moveItemInGameState(self, oldPos, newPos, color, piece):
+		if color == "white":
+			otherColor = "black"
+		elif color == "black":
+			otherColor = "white"
+		else:
+			raise ValueError("Color is invalid")
+		item = self.gameState[oldPos]
+		if item[0] != color:
+			raise ValueError("Color don't match")
+		elif item[1] != piece:
+			raise ValueError("Piece don't match")
+		else:
+			if piece == "king":
+				validMovements = self.kingMovements(oldPos, color)
+			elif piece == "queen":
+				validMovements = self.queenMovements(oldPos, color)
+			elif piece == "rook":
+				validMovements = self.rookMovements(oldPos, color)
+			elif piece == "knight":
+				validMovements = self.knightMovements(oldPos, color)
+			elif piece == "bishop":
+				validMovements = self.bishopMovements(oldPos, color)
+			elif piece == "pawn":
+				validMovements = self.pawnMovements(oldPos, color)
+			validation = newPos in  validMovements
+			if validation == False:
+				raise RuntimeError("This movement is invalid")
+			itemAtNewPos = self.gameState[newPos]
+			if itemAtNewPos == ("empty", "empty"):
+				pass
+			else:
+				self.capturedPieces[itemAtNewPos[0]].append(itemAtNewPos[1])
+			self.gameState[oldPos] = ("empty", "empty")
+			self.gameState[newPos] = item
 
-	def lookGameState(self):
-		return self.gameState
+	# Non-Public Functions
 
 	def initializeGameState(self):
 		for i in self.validLetters:
@@ -57,50 +98,6 @@ class DataBoard:
 		self.addItemInGameState("f1", ("white", "bishop"))
 		self.addItemInGameState("d1", ("white", "queen"))
 		self.addItemInGameState("e1", ("white", "king"))
-	
-	def moveItemInGameState(self, oldPos, newPos, color, piece):
-		if color == "white":
-			otherColor = "black"
-		elif color == "black":
-			otherColor = "white"
-		else:
-			raise ValueError("Color is invalid")
-		item = self.gameState[oldPos]
-		if item[0] != color:
-			raise ValueError("Color don't match")
-		elif item[1] != piece:
-			raise ValueError("Piece don't match")
-		else:
-
-			if piece == "king":
-				validMovements = self.kingMovements(oldPos, color)
-			elif piece == "queen":
-				validMovements = self.queenMovements(oldPos, color)
-			elif piece == "rook":
-				validMovements = self.rookMovements(oldPos, color)
-			elif piece == "knight":
-				validMovements = self.knightMovements(oldPos, color)
-			elif piece == "bishop":
-				validMovements = self.bishopMovements(oldPos, color)
-			elif piece == "pawn":
-				validMovements = self.pawnMovements(oldPos, color)
-
-			validation = newPos in  validMovements
-			if validation == False:
-				raise RuntimeError("This movement is invalid")
-			itemAtNewPos = self.gameState[newPos]
-			if itemAtNewPos == ("empty", "empty"):
-				pass
-			else:
-				self.capturedPieces[itemAtNewPos[0]].append(itemAtNewPos[1])
-			self.gameState[oldPos] = ("empty", "empty")
-			self.gameState[newPos] = item
-
-	def addItemInGameState(self, pos, item):
-		self.gameState[pos] = item
-
-	def lookSpecificPosition(self, pos):
-		return self.gameState.get(pos)
 
 	def translatePositionToTuple(self, pos):
 		dico = {"a": 8, "b": 7, "c": 6, "d": 5, "e": 4, "f": 3, "g": 2, "h": 1}
@@ -125,6 +122,8 @@ class DataBoard:
 			raise ValueError("InvalidPosition")
 		else:
 			return self.translateTupleToPosition(pos)
+
+	# Pieces Movements
 
 	def kingMovements(self, pos, color):
 		if color == "white":
@@ -560,7 +559,6 @@ class DataBoard:
 			except:
 				pass
 		return validMovements
-		#Manque validation canibalisation
 
 	def pawnMovements(self, pos, color):
 		posT = self.translatePositionToTuple(pos)
@@ -655,8 +653,3 @@ class DataBoard:
 			return validMovements
 		else:
 			raise ValueError("Color is invalid")
-
-# game = DataBoard()
-# print(game.knightMovements("b8", "black"))
-# game.moveItemInGameState("a2", "a4", "white", "pawn")
-# print(game.capturedPieces.get("white"))

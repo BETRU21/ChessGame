@@ -12,8 +12,9 @@ class QIconButton(QAbstractButton):
             self.imageSelected = imageSelected
 
         self.pressed.connect(self.update)
+        self.pressed.connect(self.toggle)
         self.released.connect(self.update)
-        self.released.connect(self.toggle)
+        # self.released.connect(self.toggle)
         self.setInitialSizePolicy()
         self.status = False
 
