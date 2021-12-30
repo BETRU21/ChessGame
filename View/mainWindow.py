@@ -1,6 +1,7 @@
 from View.ViewConsole import ViewConsole
 from View.ViewBoard import ViewBoard
 from Model.DataBoard import DataBoard
+from Model.DictionaryAndList import DictionaryAndList
 from PyQt5.QtWidgets import QMainWindow, QTabWidget, QAction, QLabel, QMenu
 from PyQt5 import uic
 import os
@@ -45,8 +46,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def createsComponentsAndPointers(self):
         dataBoard = DataBoard()
+        dicoAndList = DictionaryAndList().returnInfos()
         # Components
-        self.boardView = ViewBoard(dataBoard)
+        self.boardView = ViewBoard(dataBoard, dicoAndList)
         self.consoleView = ViewConsole()
 
     def setupMenuBar(self):

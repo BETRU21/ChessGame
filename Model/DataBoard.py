@@ -30,7 +30,7 @@ class DataBoard:
 			validMovements = []
 		else:
 			validMovements = []
-			print("Invalid Piece")
+			print("Invalid movements")
 		return validMovements
 
 	def addItemInGameState(self, pos, item):
@@ -147,7 +147,7 @@ class DataBoard:
 			try:
 				pos = self.positionTupleFilter(i)
 				realMovements.append(pos)
-			except Exception as e:
+			except:
 				pass
 		validMovements = []
 		for i in realMovements:
@@ -180,7 +180,7 @@ class DataBoard:
 			try:
 				pos = self.positionTupleFilter(i)
 				realMovements.append(pos)
-			except Exception as e:
+			except:
 				pass
 		validMovements = []
 		for i in realMovements:
@@ -209,15 +209,11 @@ class DataBoard:
 				if item[0] == color:
 					reachMax = True
 				elif item[0] == otherColor:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -230,15 +226,11 @@ class DataBoard:
 				if item[0] == color:
 					reachMax = True
 				elif item[0] == otherColor:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -251,15 +243,11 @@ class DataBoard:
 				if item[0] == color:
 					reachMax = True
 				elif item[0] == otherColor:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -272,15 +260,11 @@ class DataBoard:
 				if item[0] == color:
 					reachMax = True
 				elif item[0] == otherColor:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -304,15 +288,11 @@ class DataBoard:
 				if item[0] == color:
 					reachMax = True
 				elif item[0] == otherColor:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -325,15 +305,11 @@ class DataBoard:
 				if item[0] == color:
 					reachMax = True
 				elif item[0] == otherColor:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -346,15 +322,11 @@ class DataBoard:
 				if item[0] == color:
 					reachMax = True
 				elif item[0] == otherColor:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -367,15 +339,11 @@ class DataBoard:
 				if item[0] == color:
 					reachMax = True
 				elif item[0] == otherColor:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -399,15 +367,11 @@ class DataBoard:
 				if item[0] == color:
 					reachMax = True
 				elif item[0] == otherColor:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -426,9 +390,7 @@ class DataBoard:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -441,15 +403,11 @@ class DataBoard:
 				if item[0] == color:
 					reachMax = True
 				elif item[0] == otherColor:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -462,15 +420,11 @@ class DataBoard:
 				if item[0] == color:
 					reachMax = True
 				elif item[0] == otherColor:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -483,15 +437,11 @@ class DataBoard:
 				if item[0] == color:
 					reachMax = True
 				elif item[0] == otherColor:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -504,15 +454,11 @@ class DataBoard:
 				if item[0] == color:
 					reachMax = True
 				elif item[0] == otherColor:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -525,15 +471,11 @@ class DataBoard:
 				if item[0] == color:
 					reachMax = True
 				elif item[0] == otherColor:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -546,15 +488,11 @@ class DataBoard:
 				if item[0] == color:
 					reachMax = True
 				elif item[0] == otherColor:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						reachMax = True
 						validMovements.append(pos)
 				else:
-					if reachMax == True:
-						pass
-					else:
+					if reachMax == False:
 						validMovements.append(pos)
 			except:
 				pass
@@ -571,29 +509,24 @@ class DataBoard:
 				item = self.lookSpecificPosition(pos1)
 				if item[0] == "empty":
 					validMovements.append(pos1)
-				else:
-					pass
+					if posT[1] == 2:
+						newPos = (posT[0], posT[1]+2)
+						try:
+							pos1 = self.positionTupleFilter(newPos)
+							item = self.lookSpecificPosition(pos1)
+							if item[0] == "empty":
+								validMovements.append(pos1)
+						except:
+							pass
 			except:
 				pass
-			if posT[1] == 2:
-				newPos = (posT[0], posT[1]+2)
-				try:
-					pos1 = self.positionTupleFilter(newPos)
-					item = self.lookSpecificPosition(pos1)
-					if item[0] == "empty":
-						validMovements.append(pos1)
-					else:
-						pass
-				except:
-					pass
+
 			newPos = (posT[0]+1, posT[1]+1)
 			try:
 				pos1 = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(pos1)
 				if item[0] == otherColor:
 					validMovements.append(pos1)
-				else:
-					pass
 			except:
 				pass
 			newPos = (posT[0]-1, posT[1]+1)
@@ -602,8 +535,6 @@ class DataBoard:
 				item = self.lookSpecificPosition(pos1)
 				if item[0] == otherColor:
 					validMovements.append(pos1)
-				else:
-					pass
 			except:
 				pass
 			return validMovements
@@ -615,29 +546,23 @@ class DataBoard:
 				item = self.lookSpecificPosition(pos1)
 				if item[0] == "empty":
 					validMovements.append(pos1)
-				else:
-					pass
+					if posT[1] == 7:
+						newPos = (posT[0], posT[1]-2)
+						try:
+							pos1 = self.positionTupleFilter(newPos)
+							item = self.lookSpecificPosition(pos1)
+							if item[0] == "empty":
+								validMovements.append(pos1)
+						except:
+							pass
 			except:
 				pass
-			if posT[1] == 7:
-				newPos = (posT[0], posT[1]-2)
-				try:
-					pos1 = self.positionTupleFilter(newPos)
-					item = self.lookSpecificPosition(pos1)
-					if item[0] == "empty":
-						validMovements.append(pos1)
-					else:
-						pass
-				except:
-					pass
 			newPos = (posT[0]+1, posT[1]-1)
 			try:
 				pos1 = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(pos1)
 				if item[0] == otherColor:
 					validMovements.append(pos1)
-				else:
-					pass
 			except:
 				pass
 			newPos = (posT[0]-1, posT[1]-1)
@@ -646,8 +571,6 @@ class DataBoard:
 				item = self.lookSpecificPosition(pos1)
 				if item[0] == otherColor:
 					validMovements.append(pos1)
-				else:
-					pass
 			except:
 				pass
 			return validMovements
