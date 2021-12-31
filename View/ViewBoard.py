@@ -1,6 +1,7 @@
 from typing import NamedTuple
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtGui import QIcon
 from PyQt5.Qt import QPixmap
 from PyQt5 import uic
 from PyQt5 import QtGui
@@ -14,6 +15,7 @@ class Infos(NamedTuple):
     positionsBlack: list = None
     positionsWhite: list = None
     positions: list = None
+    pieces: dict = None
 
 class ViewBoard(QWidget, Ui_MainWindow):
     def __init__(self, dataBoard=None, dicoAndList=None):
@@ -24,13 +26,50 @@ class ViewBoard(QWidget, Ui_MainWindow):
         self.positionsBlack = dicoAndList.positionsBlack
         self.positionsWhite = dicoAndList.positionsWhite
         self.positions = dicoAndList.positions
+        self.pieces = dicoAndList.pieces
+        self.cmbList = {"white": self.cmb_white, "black": self.cmb_black}
         self.movements = []
         self.selectedPiece = ()
-        self.dataBoard = dataBoard 
+        self.dataBoard = dataBoard
+        self.capturedPiecesWhite = []
+        self.capturedPiecesBlack = []
         self.buttonPressed = False
         self.createButtonsList()
         self.connectWidgets()
         self.initializeGame()
+
+    def updateCMB(self):
+        capturedWhite = self.dataBoard.capturedPieces["white"]
+        capturedBlack = self.dataBoard.capturedPieces["black"]
+        if capturedWhite != self.capturedPiecesWhite:
+            self.cmb_white.clear()
+            self.cmb_black.clear()
+            self.capturedPiecesWhite = []
+            self.capturedPiecesBlack = []
+            for i in capturedWhite:
+                icon = QIcon(self.pieces["white"][i])
+                self.cmb_white.addItem(icon, i)
+                self.capturedPiecesWhite.append(i)
+
+            for i in capturedBlack:
+                icon = QIcon(self.pieces["black"][i])
+                self.cmb_black.addItem(icon, i)
+                self.capturedPiecesBlack.append(i)
+
+        elif capturedBlack != self.capturedPiecesBlack:
+            self.cmb_white.clear()
+            self.cmb_black.clear()
+            self.capturedPiecesWhite = []
+            self.capturedPiecesBlack = []
+            for i in capturedWhite:
+                icon = QIcon(self.pieces["white"][i])
+                self.cmb_white.addItem(icon, i)
+                self.capturedPiecesWhite.append(i)
+            for i in capturedBlack:
+                icon = QIcon(self.pieces["black"][i])
+                self.cmb_black.addItem(icon, i)
+                self.capturedPiecesBlack.append(i)
+
 
     def initializeGame(self):
         board = self.dataBoard.lookGameState()
@@ -55,20 +94,23 @@ class ViewBoard(QWidget, Ui_MainWindow):
 
     def validMovements(self, positions):
         for i in positions:
-            info = self.dataBoard.lookSpecificPosition(i)
-            color = info[0]
-            piece = info[1]
-            validation = i in  self.positionsBlack
-            if validation == True:
-                image = self.dico.get("valid").get("blackTile").get(color).get(piece)
-                imageSelected = self.dico.get("selected").get("blackTile").get(color).get(piece)
+            if i == "promotion":
+                pass
             else:
-                image = self.dico.get("valid").get("whiteTile").get(color).get(piece)
-                imageSelected = self.dico.get("selected").get("whiteTile").get(color).get(piece)
-            self.movements.append(i)
-            pb = self.buttons.get(i)
-            pb.setIcons(QPixmap(image).scaled(50, 50, Qt.KeepAspectRatio, Qt.SmoothTransformation),
-                                QPixmap(imageSelected).scaled(50, 50, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                info = self.dataBoard.lookSpecificPosition(i)
+                color = info[0]
+                piece = info[1]
+                validation = i in  self.positionsBlack
+                if validation == True:
+                    image = self.dico.get("valid").get("blackTile").get(color).get(piece)
+                    imageSelected = self.dico.get("selected").get("blackTile").get(color).get(piece)
+                else:
+                    image = self.dico.get("valid").get("whiteTile").get(color).get(piece)
+                    imageSelected = self.dico.get("selected").get("whiteTile").get(color).get(piece)
+                self.movements.append(i)
+                pb = self.buttons.get(i)
+                pb.setIcons(QPixmap(image).scaled(50, 50, Qt.KeepAspectRatio, Qt.SmoothTransformation),
+                                    QPixmap(imageSelected).scaled(50, 50, Qt.KeepAspectRatio, Qt.SmoothTransformation))
 
 
     def resetMovements(self):
@@ -93,6 +135,9 @@ class ViewBoard(QWidget, Ui_MainWindow):
         self.addPiece(pos, color, piece)
 
     def connectWidgets(self):
+        size = QSize(40, 40)
+        self.cmb_white.setIconSize(size)
+        self.cmb_black.setIconSize(size)
         for i in self.positions:
             pb = self.buttons.get(i)
             pb.clicked.connect(self.buttonAction)
@@ -109,7 +154,8 @@ class ViewBoard(QWidget, Ui_MainWindow):
             oldPos = self.selectedPiece.get("oldPos")
             color = self.selectedPiece.get("color")
             piece = self.selectedPiece.get("piece")
-            self.dataBoard.moveItemInGameState(oldPos, sender, color, piece)
+            promotedPiece = self.cmbList[color].currentText()
+            self.dataBoard.moveItemInGameState(oldPos, sender, color, piece, promotedPiece)
             self.movePiece(oldPos, sender, color, piece)
             self.selectedPiece = {}
             self.buttonPressed = False
@@ -119,6 +165,7 @@ class ViewBoard(QWidget, Ui_MainWindow):
             oldPb.setStatus(False)
             pb = self.buttons.get(sender)
             pb.setStatus(False)
+            self.updateCMB()
 
         elif self.buttonPressed == False:
             self.buttonPressed =  True

@@ -6,41 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>674</width>
-    <height>258</height>
+    <width>1030</width>
+    <height>434</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="1">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="2">
-    <spacer name="horizontalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="0">
+   <item row="1" column="1">
     <spacer name="horizontalSpacer">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -53,124 +27,106 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="1">
+   <item row="2" column="2">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QComboBox" name="cmb_white">
+       <property name="minimumSize">
+        <size>
+         <width>140</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="2">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="6" column="4">
-      <widget class="QIconButton" name="pb_e2">
+     <item row="2" column="7">
+      <widget class="QIconButton" name="pb_h6">
        <property name="text">
-        <string>e2</string>
+        <string>h6</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="5">
-      <widget class="QIconButton" name="pb_f2">
+     <item row="2" column="6">
+      <widget class="QIconButton" name="pb_g6">
        <property name="text">
-        <string>f2</string>
+        <string>g6</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="5">
-      <widget class="QIconButton" name="pb_f1">
+     <item row="3" column="0">
+      <widget class="QIconButton" name="pb_a5">
        <property name="text">
-        <string>f1</string>
+        <string>a5</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="6">
-      <widget class="QIconButton" name="pb_g5">
+     <item row="3" column="1">
+      <widget class="QIconButton" name="pb_b5">
        <property name="text">
-        <string>g5</string>
+        <string>b5</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="5">
-      <widget class="QIconButton" name="pb_f3">
+     <item row="1" column="6">
+      <widget class="QIconButton" name="pb_g7">
        <property name="text">
-        <string>f3</string>
+        <string>g7</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="2">
-      <widget class="QIconButton" name="pb_c7">
+     <item row="3" column="2">
+      <widget class="QIconButton" name="pb_c5">
        <property name="text">
-        <string>c7</string>
+        <string>c5</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="3">
-      <widget class="QIconButton" name="pb_d7">
+     <item row="2" column="5">
+      <widget class="QIconButton" name="pb_f6">
        <property name="text">
-        <string>d7</string>
+        <string>f6</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QIconButton" name="pb_b7">
+     <item row="4" column="1">
+      <widget class="QIconButton" name="pb_b4">
        <property name="text">
-        <string>b7</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QIconButton" name="pb_a7">
-       <property name="text">
-        <string>a7</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="6">
-      <widget class="QIconButton" name="pb_g8">
-       <property name="text">
-        <string>g8</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="4">
-      <widget class="QIconButton" name="pb_e8">
-       <property name="text">
-        <string>e8</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="7">
-      <widget class="QIconButton" name="pb_h8">
-       <property name="text">
-        <string>h8</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QIconButton" name="pb_b8">
-       <property name="text">
-        <string>b8</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QIconButton" name="pb_d8">
-       <property name="text">
-        <string>d8</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="5">
-      <widget class="QIconButton" name="pb_f8">
-       <property name="text">
-        <string>f8</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QIconButton" name="pb_c8">
-       <property name="text">
-        <string>c8</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QIconButton" name="pb_a8">
-       <property name="text">
-        <string>a8</string>
+        <string>b4</string>
        </property>
       </widget>
      </item>
@@ -202,17 +158,17 @@
        </property>
       </widget>
      </item>
+     <item row="0" column="0">
+      <widget class="QIconButton" name="pb_a8">
+       <property name="text">
+        <string>a8</string>
+       </property>
+      </widget>
+     </item>
      <item row="2" column="0">
       <widget class="QIconButton" name="pb_a6">
        <property name="text">
         <string>a6</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="7">
-      <widget class="QIconButton" name="pb_h7">
-       <property name="text">
-        <string>h7</string>
        </property>
       </widget>
      </item>
@@ -223,122 +179,24 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="7">
-      <widget class="QIconButton" name="pb_h6">
+     <item row="1" column="7">
+      <widget class="QIconButton" name="pb_h7">
        <property name="text">
-        <string>h6</string>
+        <string>h7</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QIconButton" name="pb_a5">
+     <item row="4" column="2">
+      <widget class="QIconButton" name="pb_c4">
        <property name="text">
-        <string>a5</string>
+        <string>c4</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="6">
-      <widget class="QIconButton" name="pb_g6">
+     <item row="7" column="4">
+      <widget class="QIconButton" name="pb_e1">
        <property name="text">
-        <string>g6</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="6">
-      <widget class="QIconButton" name="pb_g7">
-       <property name="text">
-        <string>g7</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QIconButton" name="pb_b5">
-       <property name="text">
-        <string>b5</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="5">
-      <widget class="QIconButton" name="pb_f6">
-       <property name="text">
-        <string>f6</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QIconButton" name="pb_c5">
-       <property name="text">
-        <string>c5</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QIconButton" name="pb_b4">
-       <property name="text">
-        <string>b4</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QIconButton" name="pb_a3">
-       <property name="text">
-        <string>a3</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="4">
-      <widget class="QIconButton" name="pb_e6">
-       <property name="text">
-        <string>e6</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QIconButton" name="pb_a4">
-       <property name="text">
-        <string>a4</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QIconButton" name="pb_b3">
-       <property name="text">
-        <string>b3</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QIconButton" name="pb_a1">
-       <property name="text">
-        <string>a1</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QIconButton" name="pb_b2">
-       <property name="text">
-        <string>b2</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QIconButton" name="pb_a2">
-       <property name="text">
-        <string>a2</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QIconButton" name="pb_b1">
-       <property name="text">
-        <string>b1</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="2">
-      <widget class="QIconButton" name="pb_c1">
-       <property name="text">
-        <string>c1</string>
+        <string>e1</string>
        </property>
       </widget>
      </item>
@@ -356,38 +214,10 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="2">
-      <widget class="QIconButton" name="pb_c4">
-       <property name="text">
-        <string>c4</string>
-       </property>
-      </widget>
-     </item>
      <item row="6" column="3">
       <widget class="QIconButton" name="pb_d2">
        <property name="text">
         <string>d2</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="4">
-      <widget class="QIconButton" name="pb_e1">
-       <property name="text">
-        <string>e1</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="3">
-      <widget class="QIconButton" name="pb_d1">
-       <property name="text">
-        <string>d1</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="3">
-      <widget class="QIconButton" name="pb_d3">
-       <property name="text">
-        <string>d3</string>
        </property>
       </widget>
      </item>
@@ -398,10 +228,164 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="3">
-      <widget class="QIconButton" name="pb_d4">
+     <item row="5" column="3">
+      <widget class="QIconButton" name="pb_d3">
        <property name="text">
-        <string>d4</string>
+        <string>d3</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="3">
+      <widget class="QIconButton" name="pb_d1">
+       <property name="text">
+        <string>d1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="5">
+      <widget class="QIconButton" name="pb_f1">
+       <property name="text">
+        <string>f1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="5">
+      <widget class="QIconButton" name="pb_f2">
+       <property name="text">
+        <string>f2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="4">
+      <widget class="QIconButton" name="pb_e2">
+       <property name="text">
+        <string>e2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="5">
+      <widget class="QIconButton" name="pb_f8">
+       <property name="text">
+        <string>f8</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QIconButton" name="pb_b8">
+       <property name="text">
+        <string>b8</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QIconButton" name="pb_c8">
+       <property name="text">
+        <string>c8</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="7">
+      <widget class="QIconButton" name="pb_h8">
+       <property name="text">
+        <string>h8</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QIconButton" name="pb_d8">
+       <property name="text">
+        <string>d8</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QIconButton" name="pb_d7">
+       <property name="text">
+        <string>d7</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="5">
+      <widget class="QIconButton" name="pb_f3">
+       <property name="text">
+        <string>f3</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QIconButton" name="pb_c7">
+       <property name="text">
+        <string>c7</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="6">
+      <widget class="QIconButton" name="pb_g5">
+       <property name="text">
+        <string>g5</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="6">
+      <widget class="QIconButton" name="pb_g4">
+       <property name="text">
+        <string>g4</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="5">
+      <widget class="QIconButton" name="pb_f4">
+       <property name="text">
+        <string>f4</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="6">
+      <widget class="QIconButton" name="pb_g2">
+       <property name="text">
+        <string>g2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="7">
+      <widget class="QIconButton" name="pb_h5">
+       <property name="text">
+        <string>h5</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="6">
+      <widget class="QIconButton" name="pb_g3">
+       <property name="text">
+        <string>g3</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="7">
+      <widget class="QIconButton" name="pb_h3">
+       <property name="text">
+        <string>h3</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="7">
+      <widget class="QIconButton" name="pb_h4">
+       <property name="text">
+        <string>h4</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="7">
+      <widget class="QIconButton" name="pb_h2">
+       <property name="text">
+        <string>h2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="7">
+      <widget class="QIconButton" name="pb_h1">
+       <property name="text">
+        <string>h1</string>
        </property>
       </widget>
      </item>
@@ -409,6 +393,13 @@
       <widget class="QIconButton" name="pb_f5">
        <property name="text">
         <string>f5</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="3">
+      <widget class="QIconButton" name="pb_d4">
+       <property name="text">
+        <string>d4</string>
        </property>
       </widget>
      </item>
@@ -440,73 +431,101 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="5">
-      <widget class="QIconButton" name="pb_f4">
+     <item row="7" column="1">
+      <widget class="QIconButton" name="pb_b1">
        <property name="text">
-        <string>f4</string>
+        <string>b1</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="6">
-      <widget class="QIconButton" name="pb_g4">
+     <item row="6" column="1">
+      <widget class="QIconButton" name="pb_b2">
        <property name="text">
-        <string>g4</string>
+        <string>b2</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="6">
-      <widget class="QIconButton" name="pb_g3">
+     <item row="7" column="2">
+      <widget class="QIconButton" name="pb_c1">
        <property name="text">
-        <string>g3</string>
+        <string>c1</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="7">
-      <widget class="QIconButton" name="pb_h5">
+     <item row="5" column="1">
+      <widget class="QIconButton" name="pb_b3">
        <property name="text">
-        <string>h5</string>
+        <string>b3</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="6">
-      <widget class="QIconButton" name="pb_g2">
+     <item row="7" column="0">
+      <widget class="QIconButton" name="pb_a1">
        <property name="text">
-        <string>g2</string>
+        <string>a1</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="7">
-      <widget class="QIconButton" name="pb_h3">
+     <item row="6" column="0">
+      <widget class="QIconButton" name="pb_a2">
        <property name="text">
-        <string>h3</string>
+        <string>a2</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="7">
-      <widget class="QIconButton" name="pb_h2">
+     <item row="5" column="0">
+      <widget class="QIconButton" name="pb_a3">
        <property name="text">
-        <string>h2</string>
+        <string>a3</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="7">
-      <widget class="QIconButton" name="pb_h1">
+     <item row="2" column="4">
+      <widget class="QIconButton" name="pb_e6">
        <property name="text">
-        <string>h1</string>
+        <string>e6</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="7">
-      <widget class="QIconButton" name="pb_h4">
+     <item row="4" column="0">
+      <widget class="QIconButton" name="pb_a4">
        <property name="text">
-        <string>h4</string>
+        <string>a4</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="6">
+      <widget class="QIconButton" name="pb_g8">
+       <property name="text">
+        <string>g8</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QIconButton" name="pb_a7">
+       <property name="text">
+        <string>a7</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
+      <widget class="QIconButton" name="pb_e8">
+       <property name="text">
+        <string>e8</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QIconButton" name="pb_b7">
+       <property name="text">
+        <string>b7</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="2" column="1">
-    <spacer name="verticalSpacer_2">
+   <item row="0" column="2">
+    <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -517,6 +536,51 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="1" column="3">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="4">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QComboBox" name="cmb_black">
+       <property name="minimumSize">
+        <size>
+         <width>140</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

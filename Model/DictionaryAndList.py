@@ -5,6 +5,7 @@ class Infos(NamedTuple):
     positionsBlack: list = None
     positionsWhite: list = None
     positions: list = None
+    pieces: dict = None
 
 class DictionaryAndList:
     def __init__(self):
@@ -14,9 +15,25 @@ class DictionaryAndList:
         self.positionsWhite = []
         self.createPositions()
         self.positions = self.positionsWhite + self.positionsBlack
+        self.iconPieces = {"white": {}, "black": {}}
+        self.createIconPieces()
 
     def returnInfos(self):
-        return Infos(self.dico, self.positionsBlack, self.positionsWhite, self.positions)
+        return Infos(self.dico, self.positionsBlack, self.positionsWhite, self.positions, self.iconPieces)
+
+    def createIconPieces(self):
+        self.iconPieces["white"]["king"] = "./View/icons/whiteKing.png"
+        self.iconPieces["white"]["queen"] = "./View/icons/whiteQueen.png"
+        self.iconPieces["white"]["rook"] = "./View/icons/whiteRook.png"
+        self.iconPieces["white"]["bishop"] = "./View/icons/whiteBishop.png"
+        self.iconPieces["white"]["knight"] = "./View/icons/whiteKnight.png"
+        self.iconPieces["white"]["pawn"] = "./View/icons/whitePawn.png"
+        self.iconPieces["black"]["king"] = "./View/icons/blackKing.png"
+        self.iconPieces["black"]["queen"] = "./View/icons/blackQueen.png"
+        self.iconPieces["black"]["rook"] = "./View/icons/blackRook.png"
+        self.iconPieces["black"]["bishop"] = "./View/icons/blackBishop.png"
+        self.iconPieces["black"]["knight"] = "./View/icons/blackKnight.png"
+        self.iconPieces["black"]["pawn"] = "./View/icons/blackPawn.png"
 
     def createPositions(self):
         letters = ["a", "c", "e", "g"]
