@@ -1,6 +1,6 @@
 from typing import NamedTuple
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt, QSize, QTimer
 from PyQt5.QtGui import QIcon
 from PyQt5.Qt import QPixmap
 from PyQt5 import uic
@@ -42,29 +42,31 @@ class ViewBoard(QWidget, Ui_MainWindow):
         capturedWhite = self.dataBoard.capturedPieces["white"]
         capturedBlack = self.dataBoard.capturedPieces["black"]
         if capturedWhite != self.capturedPiecesWhite:
-            self.cmb_white.clear()
-            self.cmb_black.clear()
-            self.capturedPiecesWhite = []
-            self.capturedPiecesBlack = []
-            for i in capturedWhite:
-                icon = QIcon(self.pieces["white"][i])
-                self.cmb_white.addItem(icon, i)
-                self.capturedPiecesWhite.append(i)
-
-            for i in capturedBlack:
-                icon = QIcon(self.pieces["black"][i])
-                self.cmb_black.addItem(icon, i)
-                self.capturedPiecesBlack.append(i)
+            newPiece = capturedWhite[-1]
+            icon = QIcon(self.pieces["white"][newPiece])
+            self.cmb_white.addItem(icon, newPiece)
+            self.capturedPiecesWhite.append(newPiece)
 
         elif capturedBlack != self.capturedPiecesBlack:
+            newPiece = capturedBlack[-1]
+            icon = QIcon(self.pieces["black"][newPiece])
+            self.cmb_black.addItem(icon, newPiece)
+            self.capturedPiecesBlack.append(newPiece)
+
+    def reupdateCMB(self, color):
+        capturedWhite = self.dataBoard.capturedPieces["white"]
+        capturedBlack = self.dataBoard.capturedPieces["black"]
+        if color == "white":
             self.cmb_white.clear()
-            self.cmb_black.clear()
             self.capturedPiecesWhite = []
-            self.capturedPiecesBlack = []
             for i in capturedWhite:
                 icon = QIcon(self.pieces["white"][i])
                 self.cmb_white.addItem(icon, i)
                 self.capturedPiecesWhite.append(i)
+
+        elif color == "black":
+            self.cmb_black.clear()
+            self.capturedPiecesBlack = []
             for i in capturedBlack:
                 icon = QIcon(self.pieces["black"][i])
                 self.cmb_black.addItem(icon, i)
@@ -165,13 +167,26 @@ class ViewBoard(QWidget, Ui_MainWindow):
             oldPb.setStatus(False)
             pb = self.buttons.get(sender)
             pb.setStatus(False)
-            self.updateCMB()
+            if piece == "pawn":
+                if sender in ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8", "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]:
+                    self.reupdateCMB(color)
+                    self.updateCMB()
+            else:    
+                self.updateCMB()
 
         elif self.buttonPressed == False:
             self.buttonPressed =  True
             info = self.dataBoard.lookSpecificPosition(sender)
             self.selectedPiece = {"oldPos": sender, "color": info[0], "piece": info[1]}
+            color = self.selectedPiece.get("color")
             movements = self.dataBoard.checkValidMovements(sender, info[0], info[1])
+            if movements[-1] == "promotion":
+                if color == "white":
+                    cmb = self.cmb_white
+                elif color == "black":
+                    cmb = self.cmb_black
+                cmb.setStyleSheet("background-color: rgb(0, 255, 0)")
+                QTimer.singleShot(200, lambda: cmb.setStyleSheet("background-color: rgb(51, 56, 68)"))
             self.validMovements(movements)
             self.disableEveryOtherButtons(sender)
         else:
