@@ -1,3 +1,12 @@
+from typing import NamedTuple
+
+class Turn(NamedTuple):
+    oldPos: str = None
+    newPos: str = None
+    color: str = None
+    piece: str = None
+
+
 
 class DataBoard:
 	def __init__(self):
@@ -6,6 +15,18 @@ class DataBoard:
 		self.gameState = {}
 		self.capturedPieces = {"white": [], "black": []}
 		self.initializeGameState()
+		self.actualTurn = 1
+		self.log = []
+
+	def lookSpecificTurn(self, turn):
+		if turn <= 0:
+			raise ValueError("Turn must be greater or equal to 1")
+		index = turn - 1
+		return self.log[index]
+
+	def addInLog(self, oldPos, newPos, color, piece):
+		turn = Turn(oldPos, newPos, color, piece)
+		self.log.append(turn)
 
 	def promotionInCapturedPieces(self, color, promotedPiece, newPiece):
 		index = self.capturedPieces[color].index(promotedPiece)
@@ -41,6 +62,7 @@ class DataBoard:
 		self.gameState[pos] = item
 	
 	def moveItemInGameState(self, oldPos, newPos, color, piece, promotePiece="empty"):
+		passing = False
 		if color == "white":
 			otherColor = "black"
 		elif color == "black":
@@ -69,6 +91,16 @@ class DataBoard:
 					if promotePiece in self.capturedPieces[color]:
 						item = (item[0], promotePiece)
 						self.promotionInCapturedPieces(color, promotePiece, piece)
+				if "passing" in validMovements:
+					if newPos == validMovements[0]:
+						if color == "white":
+							capturePos = newPos[0] + "5"
+						if color == "black":
+							capturePos = newPos[0] + "4"
+						passing = capturePos
+						itemAtCapturePos = self.gameState[capturePos]
+						self.capturedPieces[itemAtCapturePos[0]].append(itemAtCapturePos[1])
+						self.addItemInGameState(capturePos, ("empty", "empty"))
 
 			validation = newPos in  validMovements
 			if validation == False:
@@ -78,8 +110,11 @@ class DataBoard:
 				pass
 			else:
 				self.capturedPieces[itemAtNewPos[0]].append(itemAtNewPos[1])
-			self.gameState[oldPos] = ("empty", "empty")
-			self.gameState[newPos] = item
+			self.addItemInGameState(oldPos, ("empty", "empty"))
+			self.addItemInGameState(newPos, item)
+			self.addInLog(oldPos, newPos, color, piece)
+			self.actualTurn += 1
+			return passing
 
 	# Non-Public Functions
 
@@ -508,11 +543,37 @@ class DataBoard:
 		return validMovements
 
 	def pawnMovements(self, pos, color):
+		passing = False
 		promotion = False
 		posT = self.translatePositionToTuple(pos)
 		validMovements = []
 		if color == "white":
 			otherColor = "black"
+			try:
+				if pos in ["a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5"]:
+					newPos1 = (posT[0]-1, posT[1])
+					pos1 = self.positionTupleFilter(newPos1)
+					item1 = self.lookSpecificPosition(pos1)
+					if item1 == ("black", "pawn"):
+						lastTurn = self.actualTurn - 1
+						lastTurn = self.lookSpecificTurn(lastTurn)
+						if lastTurn.oldPos == pos1[0] + "7":
+							if lastTurn.newPos == pos1[0] + "5":
+								validMovements.append(pos1[0] + "6" )
+								passing = True
+
+					newPos2 = (posT[0]+1, posT[1])
+					pos2 = self.positionTupleFilter(newPos2)
+					item2 = self.lookSpecificPosition(pos2)
+					if item2 == ("black", "pawn"):
+						lastTurn = self.actualTurn - 1
+						lastTurn = self.lookSpecificTurn(lastTurn)
+						if lastTurn.oldPos == pos2[0] + "7":
+							if lastTurn.newPos == pos2[0] + "5":
+								validMovements.append(pos2[0] + "6")
+								passing = True
+			except:
+				pass
 			newPos = (posT[0], posT[1]+1)
 			try:
 				pos = self.positionTupleFilter(newPos)
@@ -554,9 +615,38 @@ class DataBoard:
 				pass
 			if promotion == True:
 				validMovements.append("promotion")
+			if passing == True:
+				validMovements.append("passing")
 			return validMovements
+
+
 		elif color == "black":
 			otherColor = "white"
+			try:
+				if pos in ["a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4"]:
+					newPos1 = (posT[0]-1, posT[1])
+					pos1 = self.positionTupleFilter(newPos1)
+					item1 = self.lookSpecificPosition(pos1)
+					if item1 == ("white", "pawn"):
+						lastTurn = self.actualTurn - 1
+						lastTurn = self.lookSpecificTurn(lastTurn)
+						if lastTurn.oldPos == pos1[0] + "2":
+							if lastTurn.newPos == pos1[0] + "4":
+								validMovements.append(pos1[0] + "3" )
+								passing = True
+
+					newPos2 = (posT[0]+1, posT[1])
+					pos2 = self.positionTupleFilter(newPos2)
+					item2 = self.lookSpecificPosition(pos2)
+					if item2 == ("white", "pawn"):
+						lastTurn = self.actualTurn - 1
+						lastTurn = self.lookSpecificTurn(lastTurn)
+						if lastTurn.oldPos == pos2[0] + "2":
+							if lastTurn.newPos == pos2[0] + "4":
+								validMovements.append(pos2[0] + "3")
+								passing = True
+			except:
+				pass
 			newPos = (posT[0], posT[1]-1)
 			try:
 				pos = self.positionTupleFilter(newPos)
@@ -598,6 +688,23 @@ class DataBoard:
 				pass
 			if promotion == True:
 				validMovements.append("promotion")
+			if passing == True:
+				validMovements.append("passing")
 			return validMovements
 		else:
 			raise ValueError("Color is invalid")
+
+
+dataBoard = DataBoard()
+dataBoard.moveItemInGameState("d2", "d4", "white", "pawn")
+dataBoard.moveItemInGameState("d4", "d5", "white", "pawn")
+dataBoard.moveItemInGameState("e7", "e5", "black", "pawn")
+#dataBoard.moveItemInGameState("c7", "c5", "black", "pawn")
+dataBoard.pawnMovements("d5", "white")
+
+# dataBoard.moveItemInGameState("d7", "d5", "black", "pawn")
+# dataBoard.moveItemInGameState("d5", "d4", "black", "pawn")
+# dataBoard.moveItemInGameState("c2", "c4", "white", "pawn")
+# dataBoard.moveItemInGameState("e2", "e4", "white", "pawn")
+# dataBoard.pawnMovements("d4", "black")
+# oldPos, sender, color, piece, promotedPiece

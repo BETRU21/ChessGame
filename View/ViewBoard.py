@@ -98,6 +98,9 @@ class ViewBoard(QWidget, Ui_MainWindow):
         for i in positions:
             if i == "promotion":
                 pass
+            elif i == "passing":
+                pass
+
             else:
                 info = self.dataBoard.lookSpecificPosition(i)
                 color = info[0]
@@ -157,7 +160,7 @@ class ViewBoard(QWidget, Ui_MainWindow):
             color = self.selectedPiece.get("color")
             piece = self.selectedPiece.get("piece")
             promotedPiece = self.cmbList[color].currentText()
-            self.dataBoard.moveItemInGameState(oldPos, sender, color, piece, promotedPiece)
+            passing = self.dataBoard.moveItemInGameState(oldPos, sender, color, piece, promotedPiece)
             self.movePiece(oldPos, sender, color, piece)
             self.selectedPiece = {}
             self.buttonPressed = False
@@ -167,6 +170,9 @@ class ViewBoard(QWidget, Ui_MainWindow):
             oldPb.setStatus(False)
             pb = self.buttons.get(sender)
             pb.setStatus(False)
+            if passing != False:
+                self.addPiece(passing, "empty", "empty")
+                self.updateCMB()
             if piece == "pawn":
                 if sender in ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8", "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]:
                     self.reupdateCMB(color)
@@ -180,13 +186,16 @@ class ViewBoard(QWidget, Ui_MainWindow):
             self.selectedPiece = {"oldPos": sender, "color": info[0], "piece": info[1]}
             color = self.selectedPiece.get("color")
             movements = self.dataBoard.checkValidMovements(sender, info[0], info[1])
-            if movements[-1] == "promotion":
-                if color == "white":
-                    cmb = self.cmb_white
-                elif color == "black":
-                    cmb = self.cmb_black
-                cmb.setStyleSheet("background-color: rgb(0, 255, 0)")
-                QTimer.singleShot(200, lambda: cmb.setStyleSheet("background-color: rgb(51, 56, 68)"))
+            try:
+                if movements[-1] == "promotion":
+                    if color == "white":
+                        cmb = self.cmb_white
+                    elif color == "black":
+                        cmb = self.cmb_black
+                    cmb.setStyleSheet("background-color: rgb(0, 255, 0)")
+                    QTimer.singleShot(200, lambda: cmb.setStyleSheet("background-color: rgb(51, 56, 68)"))
+            except:
+                pass
             self.validMovements(movements)
             self.disableEveryOtherButtons(sender)
         else:
