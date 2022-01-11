@@ -37,6 +37,7 @@ class ViewBoard(QWidget, Ui_MainWindow):
         self.createButtonsList()
         self.connectWidgets()
         self.initializeGame()
+        self.colorTurn = "white"
 
     def updateCMB(self):
         capturedWhite = self.dataBoard.capturedPieces["white"]
@@ -96,26 +97,21 @@ class ViewBoard(QWidget, Ui_MainWindow):
 
     def validMovements(self, positions):
         for i in positions:
-            if i == "promotion":
-                pass
-            elif i == "passing":
-                pass
-
+            pos = i.pos
+            info = self.dataBoard.lookSpecificPosition(pos)
+            color = info[0]
+            piece = info[1]
+            validation = pos in  self.positionsBlack
+            if validation == True:
+                image = self.dico.get("valid").get("blackTile").get(color).get(piece)
+                imageSelected = self.dico.get("selected").get("blackTile").get(color).get(piece)
             else:
-                info = self.dataBoard.lookSpecificPosition(i)
-                color = info[0]
-                piece = info[1]
-                validation = i in  self.positionsBlack
-                if validation == True:
-                    image = self.dico.get("valid").get("blackTile").get(color).get(piece)
-                    imageSelected = self.dico.get("selected").get("blackTile").get(color).get(piece)
-                else:
-                    image = self.dico.get("valid").get("whiteTile").get(color).get(piece)
-                    imageSelected = self.dico.get("selected").get("whiteTile").get(color).get(piece)
-                self.movements.append(i)
-                pb = self.buttons.get(i)
-                pb.setIcons(QPixmap(image).scaled(50, 50, Qt.KeepAspectRatio, Qt.SmoothTransformation),
-                                    QPixmap(imageSelected).scaled(50, 50, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                image = self.dico.get("valid").get("whiteTile").get(color).get(piece)
+                imageSelected = self.dico.get("selected").get("whiteTile").get(color).get(piece)
+            self.movements.append(pos)
+            pb = self.buttons.get(pos)
+            pb.setIcons(QPixmap(image).scaled(50, 50, Qt.KeepAspectRatio, Qt.SmoothTransformation),
+                                QPixmap(imageSelected).scaled(50, 50, Qt.KeepAspectRatio, Qt.SmoothTransformation))
 
 
     def resetMovements(self):
@@ -160,7 +156,7 @@ class ViewBoard(QWidget, Ui_MainWindow):
             color = self.selectedPiece.get("color")
             piece = self.selectedPiece.get("piece")
             promotedPiece = self.cmbList[color].currentText()
-            passing = self.dataBoard.moveItemInGameState(oldPos, sender, color, piece, promotedPiece)
+            move = self.dataBoard.moveItemInGameState(oldPos, sender, color, piece, promotedPiece)
             self.movePiece(oldPos, sender, color, piece)
             self.selectedPiece = {}
             self.buttonPressed = False
@@ -170,30 +166,60 @@ class ViewBoard(QWidget, Ui_MainWindow):
             oldPb.setStatus(False)
             pb = self.buttons.get(sender)
             pb.setStatus(False)
-            if passing != False:
-                self.addPiece(passing, "empty", "empty")
-                self.updateCMB()
-            if piece == "pawn":
-                if sender in ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8", "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]:
-                    self.reupdateCMB(color)
-                    self.updateCMB()
-            else:    
+            if move.tag == "littleCastling":
+                if color == "white":
+                    removePos = "h1"
+                if color == "black":
+                    removePos = "h8"
+                self.addPiece(removePos, "empty", "empty")
+
+            if move.tag == "bigCastling":
+                if color == "white":
+                    removePos = "a1"
+                if color == "black":
+                    removePos = "a8"
+                self.addPiece(removePos, "empty", "empty")
+
+            if move.tag == "passing":
+                if color == "white":
+                    removePos = move.pos[0] + str(int(move.pos[1]) - 1)
+                if color == "black":
+                    removePos = move.pos[0] + str(int(move.pos[1]) + 1)
+                self.addPiece(removePos, "empty", "empty")
                 self.updateCMB()
 
+            if move.tag == "promotion":
+                self.reupdateCMB(color)
+                self.updateCMB()
+            else:    
+                self.updateCMB()
+            if self.colorTurn == "white":
+                self.colorTurn = "black"
+            elif self.colorTurn == "black":
+                self.colorTurn = "white"
+
         elif self.buttonPressed == False:
-            self.buttonPressed =  True
             info = self.dataBoard.lookSpecificPosition(sender)
+            if self.colorTurn != info[0]:
+                pb = self.buttons.get(sender)
+                pb.setStatus(False)
+                return False
+            self.buttonPressed =  True
             self.selectedPiece = {"oldPos": sender, "color": info[0], "piece": info[1]}
             color = self.selectedPiece.get("color")
+            piece = self.selectedPiece.get("piece")
             movements = self.dataBoard.checkValidMovements(sender, info[0], info[1])
             try:
-                if movements[-1] == "promotion":
-                    if color == "white":
-                        cmb = self.cmb_white
-                    elif color == "black":
-                        cmb = self.cmb_black
-                    cmb.setStyleSheet("background-color: rgb(0, 255, 0)")
-                    QTimer.singleShot(200, lambda: cmb.setStyleSheet("background-color: rgb(51, 56, 68)"))
+                if piece == "pawn":
+                    for i in movements:
+                        if i.tag == "promotion":
+                            if color == "white":
+                                cmb = self.cmb_white
+                            elif color == "black":
+                                cmb = self.cmb_black
+                            cmb.setStyleSheet("background-color: rgb(0, 255, 0)")
+                            QTimer.singleShot(200, lambda: cmb.setStyleSheet("background-color: rgb(51, 56, 68)"))
+                        break
             except:
                 pass
             self.validMovements(movements)
