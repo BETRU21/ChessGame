@@ -1,12 +1,12 @@
+from View.mainWindow import MainWindow as Window
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtGui import QIcon
-from View.mainWindow import MainWindow as Window
 import ctypes
 import sys
 import os
 
 if sys.platform == "win32":
-    myappid = u"mycompany.myproduct.subproduct.version" # arbitrary string
+    myappid = u"PythonChessGame"
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 else:
     pass

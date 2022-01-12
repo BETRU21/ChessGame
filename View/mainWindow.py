@@ -2,7 +2,7 @@ from View.ViewConsole import ViewConsole
 from View.ViewBoard import ViewBoard
 from Model.DataBoard import DataBoard
 from Model.DictionaryAndList import DictionaryAndList
-from PyQt5.QtWidgets import QMainWindow, QTabWidget, QAction, QLabel, QMenu
+from PyQt5.QtWidgets import QMainWindow, QTabWidget
 from PyQt5 import uic
 import os
 
@@ -15,28 +15,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.createsComponentsAndPointers()
         self.setupWindowTabs()
-        self.setupMenuBar()
-        self.connectButton()
-
-    def connectButton(self):
-        self.englishLanguage.triggered.connect(self.changeLanguageEnglish)
-        self.frenchLanguage.triggered.connect(self.changeLanguageFrench)
-
-    def changeLanguageEnglish(self):
-        language = self.downloadView.currentLanguage()
-        if language == "english":
-            pass
-        else:
-            self.tabWidget.setTabText(0,"Download")
-            self.downloadView.changeLanguage("english")
-
-    def changeLanguageFrench(self):
-        language = self.downloadView.currentLanguage()
-        if language == "french":
-            pass
-        else:
-            self.tabWidget.setTabText(0,"Téléchargement")
-            self.downloadView.changeLanguage("french")
 
     def setupWindowTabs(self):
         self.tabWidget = QTabWidget()
@@ -50,10 +28,3 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Components
         self.boardView = ViewBoard(dataBoard, dicoAndList)
         self.consoleView = ViewConsole()
-
-    def setupMenuBar(self):
-        self.languageMenu = self.menubar.addMenu("Language")
-        self.englishLanguage = QAction("English", self)
-        self.frenchLanguage = QAction("Français", self)
-        self.languageMenu.addAction(self.englishLanguage)
-        self.languageMenu.addAction(self.frenchLanguage)

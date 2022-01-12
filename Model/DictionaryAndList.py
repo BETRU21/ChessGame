@@ -84,7 +84,6 @@ class DictionaryAndList:
         self.dico["normal"]["whiteTile"]["white"]["bishop"] = "./View/icons/white_tile_whiteBishop.png"
         self.dico["normal"]["whiteTile"]["white"]["knight"] = "./View/icons/white_tile_whiteKnight.png"
         self.dico["normal"]["whiteTile"]["white"]["pawn"] = "./View/icons/white_tile_whitePawn.png"
-
         self.dico["selected"]["blackTile"]["empty"]["empty"] = "./View/icons/black_tile_selected_empty.png"
         self.dico["selected"]["blackTile"]["black"]["king"] = "./View/icons/black_tile_selected_blackKing.png"
         self.dico["selected"]["blackTile"]["black"]["queen"] = "./View/icons/black_tile_selected_blackQueen.png"
@@ -111,7 +110,6 @@ class DictionaryAndList:
         self.dico["selected"]["whiteTile"]["white"]["bishop"] = "./View/icons/white_tile_selected_whiteBishop.png"
         self.dico["selected"]["whiteTile"]["white"]["knight"] = "./View/icons/white_tile_selected_whiteKnight.png"
         self.dico["selected"]["whiteTile"]["white"]["pawn"] = "./View/icons/white_tile_selected_whitePawn.png"
-
         self.dico["valid"]["blackTile"]["empty"]["empty"] = "./View/icons/black_tile_valid_empty.png"
         self.dico["valid"]["blackTile"]["black"]["king"] = "./View/icons/black_tile_valid_blackKing.png"
         self.dico["valid"]["blackTile"]["black"]["queen"] = "./View/icons/black_tile_valid_blackQueen.png"

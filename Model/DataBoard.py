@@ -1,20 +1,25 @@
 from typing import NamedTuple
 
+class PositionTuple(NamedTuple):
+	index: str = None
+	line: str = None
+
+class Movement(NamedTuple):
+	pos: str = None
+	tag: str = None
+
+class Item(NamedTuple):
+	color: str = None
+	piece: str = None
+
 class Turn(NamedTuple):
     oldPos: str = None
     newPos: str = None
     color: str = None
     piece: str = None
 
-class Movement(NamedTuple):
-	pos: str = None
-	tag: str = None
-
-
 class DataBoard:
 	def __init__(self):
-		self.validLetters = ["a","b","c","d","e","f","g","h"]
-		self.validNumbers = [8,7,6,5,4,3,2,1]
 		self.gameState = {}
 		self.capturedPieces = {"white": [], "black": []}
 		self.initializeGameState()
@@ -30,10 +35,6 @@ class DataBoard:
 	def addInLog(self, oldPos, newPos, color, piece):
 		turn = Turn(oldPos, newPos, color, piece)
 		self.log.append(turn)
-
-	def promotionInCapturedPieces(self, color, promotedPiece, newPiece):
-		index = self.capturedPieces[color].index(promotedPiece)
-		self.capturedPieces[color][index] = newPiece
 
 	def lookGameState(self):
 		return self.gameState
@@ -76,9 +77,9 @@ class DataBoard:
 		else:
 			raise ValueError("Color is invalid")
 		item = self.gameState[oldPos]
-		if item[0] != color:
+		if item.color != color:
 			raise ValueError("Color don't match")
-		elif item[1] != piece:
+		elif item.piece != piece:
 			raise ValueError("Piece don't match")
 		else:
 			if piece == "king":
@@ -103,7 +104,7 @@ class DataBoard:
 
 			if validMove.tag == "promotion":
 					if promotePiece in self.capturedPieces[color]:
-						item = (item[0], promotePiece)
+						item = Item(item.color, promotePiece)
 						self.promotionInCapturedPieces(color, promotePiece, piece)
 
 			if validMove.tag == "passing":
@@ -113,30 +114,30 @@ class DataBoard:
 					capturePos = newPos[0] + "4"
 				itemAtCapturePos = self.gameState[capturePos]
 				self.capturedPieces[itemAtCapturePos[0]].append(itemAtCapturePos[1])
-				self.addItemInGameState(capturePos, ("empty", "empty"))
+				self.addItemInGameState(capturePos, Item("empty", "empty"))
 
 			if validMove.tag == "littleCastling":
 				if color == "white":
-					self.addItemInGameState("h1", ("empty", "empty"))
-					self.addItemInGameState("f1", ("white", "rook"))
+					self.addItemInGameState("h1", Item("empty", "empty"))
+					self.addItemInGameState("f1", Item("white", "rook"))
 				if color == "black":
-					self.addItemInGameState("h8", ("empty", "empty"))
-					self.addItemInGameState("f8", ("black", "rook"))
+					self.addItemInGameState("h8", Item("empty", "empty"))
+					self.addItemInGameState("f8", Item("black", "rook"))
 
 			if validMove.tag == "bigCastling":
 				if color == "white":
-					self.addItemInGameState("a1", ("empty", "empty"))
-					self.addItemInGameState("d1", ("white", "rook"))
+					self.addItemInGameState("a1", Item("empty", "empty"))
+					self.addItemInGameState("d1", Item("white", "rook"))
 				if color == "black":
-					self.addItemInGameState("a8", ("empty", "empty"))
-					self.addItemInGameState("d8", ("black", "rook"))
+					self.addItemInGameState("a8", Item("empty", "empty"))
+					self.addItemInGameState("d8", Item("black", "rook"))
 
 			itemAtNewPos = self.gameState[newPos]
-			if itemAtNewPos == ("empty", "empty"):
+			if itemAtNewPos == Item("empty", "empty"):
 				pass
 			else:
-				self.capturedPieces[itemAtNewPos[0]].append(itemAtNewPos[1])
-			self.addItemInGameState(oldPos, ("empty", "empty"))
+				self.capturedPieces[itemAtNewPos.color].append(itemAtNewPos.piece)
+			self.addItemInGameState(oldPos, Item("empty", "empty"))
 			self.addItemInGameState(newPos, item)
 			self.addInLog(oldPos, newPos, color, piece)
 			self.actualTurn += 1
@@ -145,40 +146,40 @@ class DataBoard:
 	# Non-Public Functions
 
 	def initializeGameState(self):
-		for i in self.validLetters:
-			for j in self.validNumbers:
-				self.gameState[f"{i}{j}"] = ("empty", "empty")
+		for i in ["a","b","c","d","e","f","g","h"]:
+			for j in [8,7,6,5,4,3,2,1]:
+				self.gameState[f"{i}{j}"] = Item("empty", "empty")
 		for i in ["a7","b7","c7","d7","e7","f7","g7","h7"]:
-			self.addItemInGameState(i, ("black", "pawn"))
-		self.addItemInGameState("a8", ("black", "rook"))
-		self.addItemInGameState("h8", ("black", "rook"))
-		self.addItemInGameState("b8", ("black", "knight"))
-		self.addItemInGameState("g8", ("black", "knight"))
-		self.addItemInGameState("c8", ("black", "bishop"))
-		self.addItemInGameState("f8", ("black", "bishop"))
-		self.addItemInGameState("d8", ("black", "queen"))
-		self.addItemInGameState("e8", ("black", "king"))
+			self.addItemInGameState(i, Item("black", "pawn"))
+		self.addItemInGameState("a8", Item("black", "rook"))
+		self.addItemInGameState("h8", Item("black", "rook"))
+		self.addItemInGameState("b8", Item("black", "knight"))
+		self.addItemInGameState("g8", Item("black", "knight"))
+		self.addItemInGameState("c8", Item("black", "bishop"))
+		self.addItemInGameState("f8", Item("black", "bishop"))
+		self.addItemInGameState("d8", Item("black", "queen"))
+		self.addItemInGameState("e8", Item("black", "king"))
 		for i in ["a2","b2","c2","d2","e2","f2","g2","h2"]:
-			self.addItemInGameState(i, ("white", "pawn"))
-		self.addItemInGameState("a1", ("white", "rook"))
-		self.addItemInGameState("h1", ("white", "rook"))
-		self.addItemInGameState("b1", ("white", "knight"))
-		self.addItemInGameState("g1", ("white", "knight"))
-		self.addItemInGameState("c1", ("white", "bishop"))
-		self.addItemInGameState("f1", ("white", "bishop"))
-		self.addItemInGameState("d1", ("white", "queen"))
-		self.addItemInGameState("e1", ("white", "king"))
+			self.addItemInGameState(i, Item("white", "pawn"))
+		self.addItemInGameState("a1", Item("white", "rook"))
+		self.addItemInGameState("h1", Item("white", "rook"))
+		self.addItemInGameState("b1", Item("white", "knight"))
+		self.addItemInGameState("g1", Item("white", "knight"))
+		self.addItemInGameState("c1", Item("white", "bishop"))
+		self.addItemInGameState("f1", Item("white", "bishop"))
+		self.addItemInGameState("d1", Item("white", "queen"))
+		self.addItemInGameState("e1", Item("white", "king"))
 
 	def translatePositionToTuple(self, pos):
 		dico = {"a": 8, "b": 7, "c": 6, "d": 5, "e": 4, "f": 3, "g": 2, "h": 1}
-		line = int(pos[1])
 		index = dico[pos[0]]
-		return (index, line)
+		line = int(pos[1])
+		return PositionTuple(index, line)
 
 	def translateTupleToPosition(self, pos):
 		dico = {"8": "a", "7": "b", "6": "c", "5": "d", "4": "e", "3": "f", "2": "g", "1": "h"}
-		line = f"{pos[1]}"
 		index = dico[f"{pos[0]}"]
+		line = f"{pos[1]}"
 		return f"{index}{line}"
 	
 	def positionTupleFilter(self, pos):
@@ -193,6 +194,10 @@ class DataBoard:
 		else:
 			return self.translateTupleToPosition(pos)
 
+	def promotionInCapturedPieces(self, color, promotedPiece, newPiece):
+		index = self.capturedPieces[color].index(promotedPiece)
+		self.capturedPieces[color][index] = newPiece
+
 	# Pieces Movements
 
 	def kingMovements(self, pos, color):
@@ -206,14 +211,14 @@ class DataBoard:
 			raise ValueError("Color is invalid")
 		posT = self.translatePositionToTuple(pos)
 		PossibleMovements = []
-		PossibleMovements.append((posT[0]+1,posT[1]))
-		PossibleMovements.append((posT[0]+1,posT[1]+1))
-		PossibleMovements.append((posT[0]+1,posT[1]-1))
-		PossibleMovements.append((posT[0]-1,posT[1]))
-		PossibleMovements.append((posT[0]-1,posT[1]+1))
-		PossibleMovements.append((posT[0]-1,posT[1]-1))
-		PossibleMovements.append((posT[0],posT[1]+1))
-		PossibleMovements.append((posT[0],posT[1]-1))
+		PossibleMovements.append((posT.index+1,posT.line))
+		PossibleMovements.append((posT.index+1,posT.line+1))
+		PossibleMovements.append((posT.index+1,posT.line-1))
+		PossibleMovements.append((posT.index-1,posT.line))
+		PossibleMovements.append((posT.index-1,posT.line+1))
+		PossibleMovements.append((posT.index-1,posT.line-1))
+		PossibleMovements.append((posT.index,posT.line+1))
+		PossibleMovements.append((posT.index,posT.line-1))
 		realMovements = []
 		for i in PossibleMovements:
 			try:
@@ -224,15 +229,14 @@ class DataBoard:
 		validMovements = []
 		for i in realMovements:
 			item = self.lookSpecificPosition(i)
-			if item[0] == color:
+			if item.color == color:
 				pass
-			elif item[0] == otherColor:
+			elif item.color == otherColor:
 				move = Movement(i, "capture")
 				validMovements.append(move)
 			else:
 				move = Movement(i, "normal")
 				validMovements.append(move)
-		####
 		if color == "black":
 			if pos == "e8":
 				try:
@@ -252,15 +256,15 @@ class DataBoard:
 				except:
 					pass
 
-				if self.lookSpecificPosition("f8") == ("empty", "empty"):
-					if self.lookSpecificPosition("g8") == ("empty", "empty"):
+				if self.lookSpecificPosition("f8") == Item("empty", "empty"):
+					if self.lookSpecificPosition("g8") == Item("empty", "empty"):
 						if validLittleCastling == True:
 							move = Movement("g8", "littleCastling")
 							validMovements.append(move)
 
-				if self.lookSpecificPosition("d8") == ("empty", "empty"):
-					if self.lookSpecificPosition("c8") == ("empty", "empty"):
-						if self.lookSpecificPosition("b8") == ("empty", "empty"):
+				if self.lookSpecificPosition("d8") == Item("empty", "empty"):
+					if self.lookSpecificPosition("c8") == Item("empty", "empty"):
+						if self.lookSpecificPosition("b8") == Item("empty", "empty"):
 							if validBigCastling == True:
 								move = Movement("c8", "bigCastling")
 								validMovements.append(move)
@@ -284,15 +288,15 @@ class DataBoard:
 				except:
 					pass
 
-				if self.lookSpecificPosition("f1") == ("empty", "empty"):
-					if self.lookSpecificPosition("g1") == ("empty", "empty"):
+				if self.lookSpecificPosition("f1") == Item("empty", "empty"):
+					if self.lookSpecificPosition("g1") == Item("empty", "empty"):
 						if validLittleCastling == True:
 							move = Movement("g1", "littleCastling")
 							validMovements.append(move)
 
-				if self.lookSpecificPosition("f1") == ("empty", "empty"):
-					if self.lookSpecificPosition("c1") == ("empty", "empty"):
-						if self.lookSpecificPosition("b1") == ("empty", "empty"):
+				if self.lookSpecificPosition("f1") == Item("empty", "empty"):
+					if self.lookSpecificPosition("c1") == Item("empty", "empty"):
+						if self.lookSpecificPosition("b1") == Item("empty", "empty"):
 							if validBigCastling == True:
 								move = Movement("c1", "bigCastling")
 								validMovements.append(move)
@@ -326,9 +330,9 @@ class DataBoard:
 		validMovements = []
 		for i in realMovements:
 			item = self.lookSpecificPosition(i)
-			if item[0] == color:
+			if item.color == color:
 				pass
-			elif item[0] == otherColor:
+			elif item.color == otherColor:
 				move = Movement(i, "capture")
 				validMovements.append(move)
 			else:
@@ -347,13 +351,13 @@ class DataBoard:
 		validMovements = []
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0]+i,posT[1])
+			newPos = (posT.index+i,posT.line)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.index == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.index == otherColor:
 					if reachMax == False:
 						reachMax = True
 						move = Movement(newPos, "capture")
@@ -366,13 +370,13 @@ class DataBoard:
 				pass
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0]-i,posT[1])
+			newPos = (posT.index-i,posT.line)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.color == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.color == otherColor:
 					if reachMax == False:
 						reachMax = True
 						move = Movement(newPos, "capture")
@@ -385,13 +389,13 @@ class DataBoard:
 				pass
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0],posT[1]+i)
+			newPos = (posT.index,posT.line+i)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.color == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.color == otherColor:
 					if reachMax == False:
 						reachMax = True
 						move = Movement(newPos, "capture")
@@ -404,13 +408,13 @@ class DataBoard:
 				pass
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0],posT[1]-i)
+			newPos = (posT.index,posT.line-i)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.color == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.color == otherColor:
 					if reachMax == False:
 						reachMax = True
 						move = Movement(newPos, "capture")
@@ -434,13 +438,13 @@ class DataBoard:
 		validMovements = []
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0]+i,posT[1]+i)
+			newPos = (posT.index+i,posT.line+i)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.color == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.color == otherColor:
 					if reachMax == False:
 						reachMax = True
 						move = Movement(newPos, "capture")
@@ -453,13 +457,13 @@ class DataBoard:
 				pass
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0]+i,posT[1]-i)
+			newPos = (posT.index+i,posT.line-i)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.color == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.color == otherColor:
 					if reachMax == False:
 						reachMax = True
 						move = Movement(newPos, "capture")
@@ -472,13 +476,13 @@ class DataBoard:
 				pass
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0]-i,posT[1]+i)
+			newPos = (posT.index-i,posT.line+i)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.color == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.color == otherColor:
 					if reachMax == False:
 						reachMax = True
 						move = Movement(newPos, "capture")
@@ -491,13 +495,13 @@ class DataBoard:
 				pass
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0]-i,posT[1]-i)
+			newPos = (posT.index-i,posT.line-i)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.color == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.color == otherColor:
 					if reachMax == False:
 						reachMax = True
 						move = Movement(newPos, "capture")
@@ -521,13 +525,13 @@ class DataBoard:
 		validMovements = []
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0]+i,posT[1])
+			newPos = (posT.index+i,posT.line)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.color == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.color == otherColor:
 					if reachMax == False:
 						reachMax = True
 						move = Movement(newPos, "capture")
@@ -540,13 +544,13 @@ class DataBoard:
 				pass
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0]-i,posT[1])
+			newPos = (posT.index-i,posT.line)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.color == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.color == otherColor:
 					if reachMax == True:
 						pass
 					else:
@@ -561,13 +565,13 @@ class DataBoard:
 				pass
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0],posT[1]+i)
+			newPos = (posT.index,posT.line+i)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.color == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.color == otherColor:
 					if reachMax == False:
 						reachMax = True
 						move = Movement(newPos, "capture")
@@ -580,13 +584,13 @@ class DataBoard:
 				pass
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0],posT[1]-i)
+			newPos = (posT.index,posT.line-i)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.color == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.color == otherColor:
 					if reachMax == False:
 						reachMax = True
 						move = Movement(newPos, "capture")
@@ -599,13 +603,13 @@ class DataBoard:
 				pass
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0]+i,posT[1]+i)
+			newPos = (posT.index+i,posT.line+i)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.color == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.color == otherColor:
 					if reachMax == False:
 						reachMax = True
 						move = Movement(newPos, "capture")
@@ -618,13 +622,13 @@ class DataBoard:
 				pass
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0]+i,posT[1]-i)
+			newPos = (posT.index+i,posT.line-i)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.color == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.color == otherColor:
 					if reachMax == False:
 						reachMax = True
 						move = Movement(newPos, "capture")
@@ -637,13 +641,13 @@ class DataBoard:
 				pass
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0]-i,posT[1]+i)
+			newPos = (posT.index-i,posT.line+i)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.color == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.color == otherColor:
 					if reachMax == False:
 						reachMax = True
 						move = Movement(newPos, "capture")
@@ -656,13 +660,13 @@ class DataBoard:
 				pass
 		reachMax = False
 		for i in [1,2,3,4,5,6,7]:
-			newPos = (posT[0]-i,posT[1]-i)
+			newPos = (posT.index-i,posT.line-i)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == color:
+				if item.color == color:
 					reachMax = True
-				elif item[0] == otherColor:
+				elif item.color == otherColor:
 					if reachMax == False:
 						reachMax = True
 						move = Movement(newPos, "capture")
@@ -682,10 +686,10 @@ class DataBoard:
 			otherColor = "black"
 			try:
 				if pos in ["a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5"]:
-					newPos = (posT[0]-1, posT[1])
+					newPos = (posT.index-1, posT.line)
 					newPos = self.positionTupleFilter(newPos)
 					item = self.lookSpecificPosition(newPos)
-					if item == ("black", "pawn"):
+					if item == Item("black", "pawn"):
 						lastTurn = self.actualTurn - 1
 						lastTurn = self.lookSpecificTurn(lastTurn)
 						if lastTurn.oldPos == newPos[0] + "7":
@@ -694,10 +698,10 @@ class DataBoard:
 								move = Movement(newPos, "passing")
 								validMovements.append(move)
 
-					newPos = (posT[0]+1, posT[1])
+					newPos = (posT.index+1, posT.line)
 					newPos = self.positionTupleFilter(newPos)
 					item = self.lookSpecificPosition(newPos)
-					if item == ("black", "pawn"):
+					if item == Item("black", "pawn"):
 						lastTurn = self.actualTurn - 1
 						lastTurn = self.lookSpecificTurn(lastTurn)
 						if lastTurn.oldPos == newPos[0] + "7":
@@ -707,34 +711,34 @@ class DataBoard:
 								validMovements.append(move)
 			except:
 				pass
-			newPos = (posT[0], posT[1]+1)
+			newPos = (posT.index, posT.line+1)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == "empty":
+				if item.color == "empty":
 					if newPos in ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"]:
 						move = Movement(newPos, "promotion")
 						validMovements.append(move)
 					else:
 						move = Movement(newPos, "normal")
 						validMovements.append(move)
-					if posT[1] == 2:
-						newPos = (posT[0], posT[1]+2)
+					if posT.line == 2:
+						newPos = (posT.index, posT.line+2)
 						try:
 							newPos = self.positionTupleFilter(newPos)
 							item = self.lookSpecificPosition(newPos)
-							if item[0] == "empty":
+							if item.color == "empty":
 								move = Movement(newPos, "normal")
 								validMovements.append(move)
 						except:
 							pass
 			except:
 				pass
-			newPos = (posT[0]+1, posT[1]+1)
+			newPos = (posT.index+1, posT.line+1)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == otherColor:
+				if item.color == otherColor:
 					if newPos in ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"]:
 						move = Movement(newPos, "promotion")
 						validMovements.append(move)
@@ -743,11 +747,11 @@ class DataBoard:
 						validMovements.append(move)
 			except:
 				pass
-			newPos = (posT[0]-1, posT[1]+1)
+			newPos = (posT.index-1, posT.line+1)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == otherColor:
+				if item.color == otherColor:
 					if newPos in ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"]:
 						move = Movement(newPos, "promotion")
 						validMovements.append(move)
@@ -763,10 +767,10 @@ class DataBoard:
 			otherColor = "white"
 			try:
 				if pos in ["a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4"]:
-					newPos = (posT[0]-1, posT[1])
+					newPos = (posT.index-1, posT.line)
 					newPos = self.positionTupleFilter(newPos)
 					item = self.lookSpecificPosition(newPos)
-					if item == ("white", "pawn"):
+					if item == Item("white", "pawn"):
 						lastTurn = self.actualTurn - 1
 						lastTurn = self.lookSpecificTurn(lastTurn)
 						if lastTurn.oldPos == newPos[0] + "2":
@@ -775,10 +779,10 @@ class DataBoard:
 								move = Movement(newPos, "passing")
 								validMovements.append(move)
 
-					newPos = (posT[0]+1, posT[1])
+					newPos = (posT.index+1, posT.line)
 					newPos = self.positionTupleFilter(newPos)
 					item = self.lookSpecificPosition(newPos)
-					if item == ("white", "pawn"):
+					if item == Item("white", "pawn"):
 						lastTurn = self.actualTurn - 1
 						lastTurn = self.lookSpecificTurn(lastTurn)
 						if lastTurn.oldPos == newPos[0] + "2":
@@ -788,23 +792,23 @@ class DataBoard:
 								validMovements.append(move)
 			except:
 				pass
-			newPos = (posT[0], posT[1]-1)
+			newPos = (posT.index, posT.line-1)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == "empty":
+				if item.color == "empty":
 					if newPos in ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]:
 						move = Movement(newPos, "promotion")
 						validMovements.append(move)
 					else:
 						move = Movement(newPos, "normal")
 						validMovements.append(move)
-					if posT[1] == 7:
-						newPos = (posT[0], posT[1]-2)
+					if posT.line == 7:
+						newPos = (posT.index, posT.line-2)
 						try:
 							newPos = self.positionTupleFilter(newPos)
 							item = self.lookSpecificPosition(newPos)
-							if item[0] == "empty":
+							if item.color == "empty":
 								if newPos in ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]:
 									move = Movement(newPos, "promotion")
 									validMovements.append(move)
@@ -815,11 +819,11 @@ class DataBoard:
 							pass
 			except:
 				pass
-			newPos = (posT[0]+1, posT[1]-1)
+			newPos = (posT.index+1, posT.line-1)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == otherColor:
+				if item.color == otherColor:
 					if newPos in ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]:
 						move = Movement(newPos, "promotion")
 						validMovements.append(move)
@@ -828,11 +832,11 @@ class DataBoard:
 						validMovements.append(move)
 			except:
 				pass
-			newPos = (posT[0]-1, posT[1]-1)
+			newPos = (posT.index-1, posT.line-1)
 			try:
 				newPos = self.positionTupleFilter(newPos)
 				item = self.lookSpecificPosition(newPos)
-				if item[0] == otherColor:
+				if item.color == otherColor:
 					if newPos in ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]:
 						move = Movement(newPos, "promotion")
 						validMovements.append(move)
