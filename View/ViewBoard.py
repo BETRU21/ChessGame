@@ -32,37 +32,108 @@ class ViewBoard(QWidget, Ui_MainWindow):
         self.connectWidgets()
         self.initializeGame()
 
-    def updateCMB(self):
-        capturedWhite = self.dataBoard.capturedPieces["white"]
-        capturedBlack = self.dataBoard.capturedPieces["black"]
-        if capturedWhite != self.capturedPiecesWhite:
-            newPiece = capturedWhite[-1]
-            icon = QIcon(self.pieces["white"][newPiece])
-            self.cmb_white.addItem(icon, newPiece)
-            self.capturedPiecesWhite.append(newPiece)
-        elif capturedBlack != self.capturedPiecesBlack:
-            newPiece = capturedBlack[-1]
-            icon = QIcon(self.pieces["black"][newPiece])
-            self.cmb_black.addItem(icon, newPiece)
-            self.capturedPiecesBlack.append(newPiece)
+    def connectWidgets(self):
+        size = QSize(40, 40)
+        self.cmb_white.setIconSize(size)
+        self.cmb_black.setIconSize(size)
+        for pos in self.positions:
+            pb = self.buttons.get(pos)
+            pb.pressed.connect(self.buttonAction)
 
-    def reupdateCMB(self, color):
-        capturedWhite = self.dataBoard.capturedPieces["white"]
-        capturedBlack = self.dataBoard.capturedPieces["black"]
-        if color == "white":
-            self.cmb_white.clear()
-            self.capturedPiecesWhite = []
-            for i in capturedWhite:
-                icon = QIcon(self.pieces["white"][i])
-                self.cmb_white.addItem(icon, i)
-                self.capturedPiecesWhite.append(i)
-        elif color == "black":
-            self.cmb_black.clear()
-            self.capturedPiecesBlack = []
-            for i in capturedBlack:
-                icon = QIcon(self.pieces["black"][i])
-                self.cmb_black.addItem(icon, i)
-                self.capturedPiecesBlack.append(i)
+    def buttonAction(self):
+        sender = self.sender().text()
+        if self.dataBoard.lookSpecificPosition(sender) == ("empty", "empty"):
+            if len(self.movements) == 0:
+                pb = self.buttons.get(sender)
+                pb.setStatus(False)
+                return False
+        if sender in self.movements:
+            oldPos = self.selectedPiece.get("oldPos")
+            color = self.selectedPiece.get("color")
+            piece = self.selectedPiece.get("piece")
+            promotedPiece = self.cmbList[color].currentText()
+            if promotedPiece == "":
+                promotedPiece = "pawn"
+            move = self.dataBoard.moveItemInGameState(oldPos, sender, color, piece, promotedPiece)
+            self.movePiece(oldPos, sender, color, piece)
+            self.enableAllButtons()
+            self.resetMovements()
+            self.buttonPressed = False
+            self.selectedPiece = {}
+            oldPb = self.buttons.get(oldPos)
+            oldPb.setStatus(False)
+            pb = self.buttons.get(sender)
+            pb.setStatus(False)
+            if move.tag == "littleCastling":
+                if color == "white":
+                    removePos = "h1"
+                if color == "black":
+                    removePos = "h8"
+                self.addPiece(removePos, "empty", "empty")
+            if move.tag == "bigCastling":
+                if color == "white":
+                    removePos = "a1"
+                if color == "black":
+                    removePos = "a8"
+                self.addPiece(removePos, "empty", "empty")
+            if move.tag == "passing":
+                if color == "white":
+                    removePos = move.pos[0] + str(int(move.pos[1]) - 1)
+                if color == "black":
+                    removePos = move.pos[0] + str(int(move.pos[1]) + 1)
+                self.addPiece(removePos, "empty", "empty")
+                self.updateCMB()
+            if move.tag == "promotion":
+                self.reupdateCMB(color)
+                self.updateCMB()
+            elif move.tag == "promotionAndCapture":
+                self.reupdateCMB(color)
+                self.updateCMB()
+            else:    
+                self.updateCMB()
+            self.printOnConsole(oldPos, sender, color, piece, move.tag, promotedPiece)
+            if self.colorTurn == "white":
+                self.colorTurn = "black"
+            elif self.colorTurn == "black":
+                self.colorTurn = "white"
+        elif self.buttonPressed == False:
+            item = self.dataBoard.lookSpecificPosition(sender)
+            if self.colorTurn != item.color:
+                pb = self.buttons.get(sender)
+                pb.setStatus(False)
+                return False
+            self.buttonPressed =  True
+            self.selectedPiece = {"oldPos": sender, "color": item.color, "piece": item.piece}
+            color = self.selectedPiece.get("color")
+            piece = self.selectedPiece.get("piece")
+            movements = self.dataBoard.checkValidMovements(sender, item.color, item.piece)
+            try:
+                if piece == "pawn":
+                    for i in movements:
+                        if i.tag == "promotion":
+                            if color == "white":
+                                cmb = self.cmb_white
+                            elif color == "black":
+                                cmb = self.cmb_black
+                            cmb.setStyleSheet("background-color: rgb(0, 255, 0)")
+                            QTimer.singleShot(200, lambda: cmb.setStyleSheet("background-color: rgb(51, 56, 68)"))
+                        elif i.tag == "promotionAndCapture":
+                            if color == "white":
+                                cmb = self.cmb_white
+                            elif color == "black":
+                                cmb = self.cmb_black
+                            cmb.setStyleSheet("background-color: rgb(0, 255, 0)")
+                            QTimer.singleShot(200, lambda: cmb.setStyleSheet("background-color: rgb(51, 56, 68)"))
+                        break
+            except:
+                pass
+            self.validMovements(movements)
+            self.disableEveryOtherButtons(sender)
+        else:
+            self.selectedPiece = {}
+            self.buttonPressed = False
+            self.enableAllButtons()
+            self.resetMovements()
 
     def initializeGame(self):
         board = self.dataBoard.lookGameState()
@@ -115,95 +186,37 @@ class ViewBoard(QWidget, Ui_MainWindow):
         self.addPiece(oldPos, "empty", "empty")
         self.addPiece(pos, color, piece)
 
-    def connectWidgets(self):
-        size = QSize(40, 40)
-        self.cmb_white.setIconSize(size)
-        self.cmb_black.setIconSize(size)
-        for pos in self.positions:
-            pb = self.buttons.get(pos)
-            pb.pressed.connect(self.buttonAction)
+    def updateCMB(self):
+        capturedWhite = self.dataBoard.capturedPieces["white"]
+        capturedBlack = self.dataBoard.capturedPieces["black"]
+        if capturedWhite != self.capturedPiecesWhite:
+            newPiece = capturedWhite[-1]
+            icon = QIcon(self.pieces["white"][newPiece])
+            self.cmb_white.addItem(icon, newPiece)
+            self.capturedPiecesWhite.append(newPiece)
+        elif capturedBlack != self.capturedPiecesBlack:
+            newPiece = capturedBlack[-1]
+            icon = QIcon(self.pieces["black"][newPiece])
+            self.cmb_black.addItem(icon, newPiece)
+            self.capturedPiecesBlack.append(newPiece)
 
-    def buttonAction(self):
-        sender = self.sender().text()
-        if self.dataBoard.lookSpecificPosition(sender) == ("empty", "empty"):
-            if len(self.movements) == 0:
-                pb = self.buttons.get(sender)
-                pb.setStatus(False)
-                return False
-        if sender in self.movements:
-            oldPos = self.selectedPiece.get("oldPos")
-            color = self.selectedPiece.get("color")
-            piece = self.selectedPiece.get("piece")
-            promotedPiece = self.cmbList[color].currentText()
-            move = self.dataBoard.moveItemInGameState(oldPos, sender, color, piece, promotedPiece)
-            self.movePiece(oldPos, sender, color, piece)
-            self.enableAllButtons()
-            self.resetMovements()
-            self.buttonPressed = False
-            self.selectedPiece = {}
-            oldPb = self.buttons.get(oldPos)
-            oldPb.setStatus(False)
-            pb = self.buttons.get(sender)
-            pb.setStatus(False)
-            if move.tag == "littleCastling":
-                if color == "white":
-                    removePos = "h1"
-                if color == "black":
-                    removePos = "h8"
-                self.addPiece(removePos, "empty", "empty")
-            if move.tag == "bigCastling":
-                if color == "white":
-                    removePos = "a1"
-                if color == "black":
-                    removePos = "a8"
-                self.addPiece(removePos, "empty", "empty")
-            if move.tag == "passing":
-                if color == "white":
-                    removePos = move.pos[0] + str(int(move.pos[1]) - 1)
-                if color == "black":
-                    removePos = move.pos[0] + str(int(move.pos[1]) + 1)
-                self.addPiece(removePos, "empty", "empty")
-                self.updateCMB()
-            if move.tag == "promotion":
-                self.reupdateCMB(color)
-                self.updateCMB()
-            else:    
-                self.updateCMB()
-            if self.colorTurn == "white":
-                self.colorTurn = "black"
-            elif self.colorTurn == "black":
-                self.colorTurn = "white"
-        elif self.buttonPressed == False:
-            item = self.dataBoard.lookSpecificPosition(sender)
-            if self.colorTurn != item.color:
-                pb = self.buttons.get(sender)
-                pb.setStatus(False)
-                return False
-            self.buttonPressed =  True
-            self.selectedPiece = {"oldPos": sender, "color": item.color, "piece": item.piece}
-            color = self.selectedPiece.get("color")
-            piece = self.selectedPiece.get("piece")
-            movements = self.dataBoard.checkValidMovements(sender, item.color, item.piece)
-            try:
-                if piece == "pawn":
-                    for i in movements:
-                        if i.tag == "promotion":
-                            if color == "white":
-                                cmb = self.cmb_white
-                            elif color == "black":
-                                cmb = self.cmb_black
-                            cmb.setStyleSheet("background-color: rgb(0, 255, 0)")
-                            QTimer.singleShot(200, lambda: cmb.setStyleSheet("background-color: rgb(51, 56, 68)"))
-                        break
-            except:
-                pass
-            self.validMovements(movements)
-            self.disableEveryOtherButtons(sender)
-        else:
-            self.selectedPiece = {}
-            self.buttonPressed = False
-            self.enableAllButtons()
-            self.resetMovements()
+    def reupdateCMB(self, color):
+        capturedWhite = self.dataBoard.capturedPieces["white"]
+        capturedBlack = self.dataBoard.capturedPieces["black"]
+        if color == "white":
+            self.cmb_white.clear()
+            self.capturedPiecesWhite = []
+            for i in capturedWhite:
+                icon = QIcon(self.pieces["white"][i])
+                self.cmb_white.addItem(icon, i)
+                self.capturedPiecesWhite.append(i)
+        elif color == "black":
+            self.cmb_black.clear()
+            self.capturedPiecesBlack = []
+            for i in capturedBlack:
+                icon = QIcon(self.pieces["black"][i])
+                self.cmb_black.addItem(icon, i)
+                self.capturedPiecesBlack.append(i)
 
     def disableEveryOtherButtons(self, sender):
         for pos in self.positions:
@@ -223,6 +236,31 @@ class ViewBoard(QWidget, Ui_MainWindow):
     def setIconsImage(self, pb, image, imageSelected):
         pb.setIcons(QPixmap(image).scaled(50, 50, Qt.KeepAspectRatio, Qt.SmoothTransformation),
                                 QPixmap(imageSelected).scaled(50, 50, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+
+    def printOnConsole(self, oldPos, newPos, color, piece, tag, promotedPiece):
+        if color == "white":
+            otherColor = "black"
+        elif color == "black":
+            otherColor = "white"
+        turn = self.dataBoard.currentTurn - 1
+        if tag == "normal":
+            text = f"[Turn {turn}] {color} {piece}: {oldPos} ⟶ {newPos}"
+        elif tag == "capture":
+            capturedPiece = self.dataBoard.capturedPieces[otherColor][-1]
+            text = f"[Turn {turn}] {color} {piece}: {oldPos} ⟶ {newPos} (captured piece: {otherColor} {capturedPiece})"
+        elif tag == "promotionAndCapture":
+            capturedPiece = self.dataBoard.capturedPieces[otherColor][-1]
+            text = f"[Turn {turn}] {color} {piece}: {oldPos} ⟶ {newPos} (promotion into {color} {promotedPiece})(captured piece: {otherColor} {capturedPiece})"
+        elif tag == "promotion":
+            text = f"[Turn {turn}] {color} {piece}: {oldPos} ⟶ {newPos} (promotion into {color} {promotedPiece})"
+        elif tag == "bigCastling" or tag == "littleCastling":
+            text = f"[Turn {turn}] {color} {tag}"
+        elif tag == "passing":
+            text = f"[Turn {turn}] {color} {piece}: {oldPos} ⟶ {newPos} (captured piece with passing: {otherColor} pawn)"
+        else:
+            text = f"[Turn {turn}] {color} {piece}: {oldPos} ⟶ {newPos} with the tag: {tag}"
+        self.consoleView.showOnConsole(text)
+
 
     def createButtonsList(self):
         self.buttons["a8"] = self.pb_a8

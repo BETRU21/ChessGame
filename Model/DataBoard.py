@@ -23,7 +23,7 @@ class DataBoard:
 		self.gameState = {}
 		self.capturedPieces = {"white": [], "black": []}
 		self.initializeGameState()
-		self.actualTurn = 1
+		self.currentTurn = 1
 		self.log = []
 
 	def lookSpecificTurn(self, turn):
@@ -65,13 +65,13 @@ class DataBoard:
 	def addItemInGameState(self, pos, item):
 		self.gameState[pos] = item
 	
-	def moveItemInGameState(self, oldPos, newPos, color, piece, promotePiece="empty"):
+	def moveItemInGameState(self, oldPos, newPos, color, piece, promotePiece="pawn"):
 		if color == "white":
-			if self.actualTurn%2 == 0:
+			if self.currentTurn%2 == 0:
 				raise RuntimeError("This is not your turn")
 			otherColor = "black"
 		elif color == "black":
-			if self.actualTurn%2 == 1:
+			if self.currentTurn%2 == 1:
 				raise RuntimeError("This is not your turn")
 			otherColor = "white"
 		else:
@@ -103,6 +103,11 @@ class DataBoard:
 				raise RuntimeError("This movement is invalid")
 
 			if validMove.tag == "promotion":
+					if promotePiece in self.capturedPieces[color]:
+						item = Item(item.color, promotePiece)
+						self.promotionInCapturedPieces(color, promotePiece, piece)
+
+			if validMove.tag == "promotionAndCapture":
 					if promotePiece in self.capturedPieces[color]:
 						item = Item(item.color, promotePiece)
 						self.promotionInCapturedPieces(color, promotePiece, piece)
@@ -140,7 +145,7 @@ class DataBoard:
 			self.addItemInGameState(oldPos, Item("empty", "empty"))
 			self.addItemInGameState(newPos, item)
 			self.addInLog(oldPos, newPos, color, piece)
-			self.actualTurn += 1
+			self.currentTurn += 1
 			return validMove
 
 	# Non-Public Functions
@@ -294,7 +299,7 @@ class DataBoard:
 							move = Movement("g1", "littleCastling")
 							validMovements.append(move)
 
-				if self.lookSpecificPosition("f1") == Item("empty", "empty"):
+				if self.lookSpecificPosition("d1") == Item("empty", "empty"):
 					if self.lookSpecificPosition("c1") == Item("empty", "empty"):
 						if self.lookSpecificPosition("b1") == Item("empty", "empty"):
 							if validBigCastling == True:
@@ -690,7 +695,7 @@ class DataBoard:
 					newPos = self.positionTupleFilter(newPos)
 					item = self.lookSpecificPosition(newPos)
 					if item == Item("black", "pawn"):
-						lastTurn = self.actualTurn - 1
+						lastTurn = self.currentTurn - 1
 						lastTurn = self.lookSpecificTurn(lastTurn)
 						if lastTurn.oldPos == newPos[0] + "7":
 							if lastTurn.newPos == newPos[0] + "5":
@@ -702,7 +707,7 @@ class DataBoard:
 					newPos = self.positionTupleFilter(newPos)
 					item = self.lookSpecificPosition(newPos)
 					if item == Item("black", "pawn"):
-						lastTurn = self.actualTurn - 1
+						lastTurn = self.currentTurn - 1
 						lastTurn = self.lookSpecificTurn(lastTurn)
 						if lastTurn.oldPos == newPos[0] + "7":
 							if lastTurn.newPos == newPos[0] + "5":
@@ -740,7 +745,7 @@ class DataBoard:
 				item = self.lookSpecificPosition(newPos)
 				if item.color == otherColor:
 					if newPos in ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"]:
-						move = Movement(newPos, "promotion")
+						move = Movement(newPos, "promotionAndCapture")
 						validMovements.append(move)
 					else:
 						move = Movement(newPos, "capture")
@@ -753,7 +758,7 @@ class DataBoard:
 				item = self.lookSpecificPosition(newPos)
 				if item.color == otherColor:
 					if newPos in ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"]:
-						move = Movement(newPos, "promotion")
+						move = Movement(newPos, "promotionAndCapture")
 						validMovements.append(move)
 					else:
 						move = Movement(newPos, "capture")
@@ -771,7 +776,7 @@ class DataBoard:
 					newPos = self.positionTupleFilter(newPos)
 					item = self.lookSpecificPosition(newPos)
 					if item == Item("white", "pawn"):
-						lastTurn = self.actualTurn - 1
+						lastTurn = self.currentTurn - 1
 						lastTurn = self.lookSpecificTurn(lastTurn)
 						if lastTurn.oldPos == newPos[0] + "2":
 							if lastTurn.newPos == newPos[0] + "4":
@@ -783,7 +788,7 @@ class DataBoard:
 					newPos = self.positionTupleFilter(newPos)
 					item = self.lookSpecificPosition(newPos)
 					if item == Item("white", "pawn"):
-						lastTurn = self.actualTurn - 1
+						lastTurn = self.currentTurn - 1
 						lastTurn = self.lookSpecificTurn(lastTurn)
 						if lastTurn.oldPos == newPos[0] + "2":
 							if lastTurn.newPos == newPos[0] + "4":

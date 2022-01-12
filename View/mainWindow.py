@@ -28,3 +28,4 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Components
         self.boardView = ViewBoard(dataBoard, dicoAndList)
         self.consoleView = ViewConsole()
+        self.boardView.consoleView = self.consoleView

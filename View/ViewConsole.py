@@ -13,7 +13,7 @@ class ViewConsole(QWidget, Ui_MainWindow):
         self.te_Console.clear()
 
     def showOnConsole(self, text, color=None):
-        text = "> " + text
+        text = ">   " + text
         if color == "red":
             HEX = "#ff0000"
         elif color == "green":
@@ -22,3 +22,5 @@ class ViewConsole(QWidget, Ui_MainWindow):
             HEX = "#ffffff"
         self.te_Console.setTextColor(QtGui.QColor(HEX))
         self.te_Console.append(text)
+        self.te_Console.append("")
+
